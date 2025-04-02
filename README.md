@@ -1,0 +1,2 @@
+# speeles-projekts
+ pārbaudes darbs
