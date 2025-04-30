@@ -1,29 +1,125 @@
 <!DOCTYPE html>
 <html lang="lv">
 <head>
-    <meta charset="UTF-8"/>
-    <title>Skaitļu Sala</title>
-        <style>
-        body { font-family: sans-serif; text-align: center; background: #1cb212; padding: 20px; }
-        #island {width: 300px; margin-top: 20px;}
-        button {margin: 10px; padding: 10px 20px; font-size: 18px; }
-        </style>
-    </head>
-    <body>
-        <div id="spelesSaturs">
-            <!-- Šeit bus pogas, jautājumi, monētu un dzīvību skaits-->
-        </div>
-        <div id="game">
-            <h1>Skaitļu Sala</h1>
-            <div id="scene"><img
-src="images/image.png" alt="Sala" style="max-width: 100%; height: auto;"></div>
-<div id="rezultats" style="font-size: 24px; font-weight: bold; margin-top: 20px;"></div>
-                <div id="question"></div>
-                <div id="answers"></div>
-                <div id="lives">Dzīvības: 4</div>
-                <div id="coins">Monētas: 0</div>
-            </div>
+  <meta charset="UTF-8">
+  <title>Skaitļu sala</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-image: url('background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
 
-            <script src="game.js"></script>
-    </body>
+    #startScreen, #gameScreen {
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      width: 80%;
+      max-width: 600px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      background-color: #28a745;
+      color: white;
+      cursor: pointer;
+      margin: 5px;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+  <div id="startScreen">
+    <h1>Skaitļu sala</h1>
+    <p>Atbildi uz jautājumiem pareizi un pelni monētas! Ja kļūdīsies pārāk bieži – zaudēsi.</p>
+    <button onclick="startGame()">SPĒLĒT</button>
+  </div>
+
+  <div id="gameScreen" style="display: none;">
+    <h2 id="jautajums">Jautājums šeit</h2>
+    <div id="atbDiv"></div>
+    <p id="coins">Monētas: 0</p>
+    <p id="lives">Dzīvības: 3</p>
+  </div>
+
+  <script>
+    let dzivibas = 3;
+    let monetas = 0;
+    let kuraJautajumaKarte = 0;
+
+    const jautajumi = [
+      {
+        jautajums: "Cik ir 2 + 2?",
+        atbildes: ["3", "4", "5"],
+        pareiza: "4"
+      },
+      {
+        jautajums: "Kurš ir pāra skaitlis?",
+        atbildes: ["5", "8", "9"],
+        pareiza: "8"
+      }
+    ];
+
+    function startGame() {
+      document.getElementById("startScreen").style.display = "none";
+      document.getElementById("gameScreen").style.display = "block";
+      raditJautajumu();
+    }
+
+    function raditJautajumu() {
+      let jaut = jautajumi[kuraJautajumaKarte];
+      document.getElementById("jautajums").innerText = jaut.jautajums;
+
+      const atbDiv = document.getElementById("atbDiv");
+      atbDiv.innerHTML = "";
+
+      jaut.atbildes.forEach(function(atbilde) {
+        let poga = document.createElement("button");
+        poga.innerText = atbilde;
+        poga.onclick = function() {
+          parbauditAtbildi(atbilde);
+        };
+        atbDiv.appendChild(poga);
+      });
+    }
+
+    function parbauditAtbildi(atbilde) {
+      let pareiza = jautajumi[kuraJautajumaKarte].pareiza;
+
+      if (atbilde === pareiza) {
+        monetas++;
+        document.getElementById("coins").innerText = "Monētas: " + monetas;
+      } else {
+        dzivibas--;
+        document.getElementById("lives").innerText = "Dzīvības: " + dzivibas;
+        if (dzivibas === 0) {
+          alert("Spēle beigusies! Tu zaudēji.");
+          return;
+        }
+      }
+
+      kuraJautajumaKarte++;
+      if (kuraJautajumaKarte < jautajumi.length) {
+        raditJautajumu();
+      } else {
+        alert("Spēle beigusies! Tu ieguvi " + monetas + " monētas.");
+      }
+    }
+  </script>
+</body>
 </html>
